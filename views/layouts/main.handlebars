@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>coderhouse-entrega6</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+
+</head>
+
+<body onload="init()">
+
+    <div class="container">
+        <form action="" method="post" id="my-form">
+            <div class="form-group">
+                <label for="titleInput">Título del producto</label>
+                <input type="text" class="form-control" id="titleInput" name="titleInput"
+                    placeholder="Título del producto">
+            </div>
+            <div class="form-group">
+                <label for="priceInput">Precio del producto</label>
+                <input type="text" class="form-control" id="priceInput" name="priceInput"
+                    placeholder="Precio del producto">
+            </div>
+            <div class="form-group">
+                <label for="thumbnailInput">Thumbnail del producto</label>
+                <input type="text" class="form-control" id="thumbnailInput" name="thumbnailInput"
+                    placeholder="Thumbnail del producto"
+                    value="https://cdn3.iconfinder.com/data/icons/education-209/64/book-note-paper-school-128.png">
+                <a href="https://www.iconfinder.com/iconsets/education-209" target="blank"> + url fotos</a>
+            </div>
+            <button type="submit" class="btn btn-primary">Añadir producto</button>
+        </form>
+
+        <br /> <br />
+
+        <table class="table" id="my-table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Thumbnail</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {{#if productos}}
+
+                {{#each productos}}
+                <tr>
+                    <th scope="row">{{this.id}}</th>
+                    <td>{{this.title}}</td>
+                    <td>{{this.price}}</td>
+                    <td><img width="30" height="30" src="{{this.thumbnail}}" /> </td>
+                </tr>
+                {{/each}}
+
+                {{else}}
+
+                <tr>
+                    <td colspan="4">No hay productos</td>
+                </tr>
+                {{/if}}
+
+
+            </tbody>
+        </table>
+
+
+    </div>
+
+
+    <script>
+        const myForm = document.getElementById("my-form");
+        const socket = io();
+
+        const submitForm = (event) => {
+            event.preventDefault();
+            
+            const product = {
+                title: document.getElementById('titleInput').value,
+                price: document.getElementById('priceInput').value,
+                thumbnail: document.getElementById('thumbnailInput').value,
+                //id: (productos.length + 1),
+                id: 1,
+                delete: false,
+            }
+            socket.emit("addProduct", product);
+            addRow(product);
+            loadProducts();
+        }
+
+        function init() {
+            myForm.addEventListener('submit', submitForm);
+            //socket = io({transports: ['websocket'], upgrade: false});
+            socket.on("init", data => {
+                productos = data;
+            });
+        }
+
+        function loadProducts() {
+            socket.on("listenserver", data =>{
+                console.log("Recibiendo..", data);
+            });
+        }
+
+        function addRow(product) {
+            let table = document.querySelector("#my-table tbody");
+            table.innerHTML = `<th scope="row">1</th><td>${product.title}</td><td>${product.price}</td><td><img width="30" height="30" src="${product.thumbnail}"/></td>` + table.innerHTML;
+        }
+
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

@@ -116,7 +116,7 @@
                 price: document.getElementById('priceInput').value,
                 thumbnail: document.getElementById('thumbnailInput').value,
                 //id: (productos.length + 1),
-                id: 1,
+                //id: 1,
                 delete: false,
             }
             socket.emit("addProduct", product);
@@ -176,7 +176,7 @@
             if (products.length !== 0) {
                 //document.getElementById("zero-products").parentElement.remove();
                 products.forEach(product => {
-                    table.innerHTML = table.innerHTML + `<th scope="row">1</th><td>${product.title}</td><td>${product.price}</td><td><img width="30" height="30" src="${product.thumbnail}"/></td>`;
+                    table.innerHTML = table.innerHTML + `<th scope="row">${product.id}</th><td>${product.title}</td><td>${product.price}</td><td><img width="30" height="30" src="${product.thumbnail}"/></td>`;
                 });
             } else {
                 table.innerHTML = `<td id="zero-products" colspan="4">No hay productos</td>` + table.innerHTML;

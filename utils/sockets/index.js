@@ -1,5 +1,11 @@
 const { Server } = require("socket.io");
 
+const database = require('../../config/db');
+const db = database.instance;
+
+const databaseSqlite = require('../../config/sqliteDb');
+const sqliteDb = databaseSqlite.instance;
+
 class Socket {
 
     static instancia;
@@ -20,30 +26,34 @@ class Socket {
 
         try {
 
-            this.io.on('connection', (socket) => {
+            this.io.on('connection', async (socket) => {
 
                 const dateConnectd = new Date();
                 
-                console.log(`User connected at ${dateConnectd}`);
-
-                socket.emit('init', this.products);
+                //console.log(`User connected at ${dateConnectd}`);
+                const products = await db.from('products');
+                socket.emit('init', products);
     
-                socket.on('addProduct', data => {
-                    console.log(`addProduct`);
+                socket.on('addProduct', async data => {
+                    //console.log(`addProduct`);
                     this.products.push(data);
-                    this.io.sockets.emit('listenserver', this.products);
+                    await db.from('products').insert(data); 
+                    const products = await db.from('products');
+                    this.io.sockets.emit('listenserver', products);
                 });
 
-                socket.on('addUser', user => {
-                    console.log(`addUser`);
+                socket.on('addUser', async user => {
+                    //console.log(`addUser`);
                     this.users.push(user);
-                    this.io.sockets.emit('listenServerMessages', this.messages);
+                    const messages = await sqliteDb.from('messages');
+                    this.io.sockets.emit('listenServerMessages', messages);
                 })
 
-                socket.on('addMessage', message => {
-                    console.log(`addMessage`, message);
-                    this.messages.push(message);
-                    this.io.sockets.emit('listenServerMessages', this.messages);
+                socket.on('addMessage', async message => {
+                    //console.log(`addMessage`, message);
+                    await sqliteDb.from('messages').insert(message); 
+                    const messages = await sqliteDb.from('messages');
+                    this.io.sockets.emit('listenServerMessages', messages);
                 })
     
     

@@ -20,6 +20,7 @@
     "express": "^4.17.1",
     "express-handlebars": "^6.0.2",
     "knex": "^0.95.15",
+    "mongoose": "^6.1.7",
     "mysql2": "^2.3.3",
     "socket.io": "^4.4.0",
     "sqlite3": "^5.0.2"

@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-
 const config = {
     dev: process.env.NODE_ENV !== 'production',
     port: process.env.PORT || 8080,
@@ -15,6 +14,13 @@ const db = {
     port: process.env.DB_PORT,
 }
 
+const mongoDb = {
+    user: process.env.MONGODB_USER,
+    password: process.env.MONGODB_PASSWORD,
+    host: process.env.MONGODB_HOST,
+    database: process.env.MONGODB_DATABASE,
+}
 
 
-module.exports = { config, db };
+
+module.exports = { config, db, mongoDb };

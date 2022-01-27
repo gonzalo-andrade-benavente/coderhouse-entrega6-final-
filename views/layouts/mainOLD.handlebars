@@ -9,15 +9,13 @@
 
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
-
 
 </head>
 
 <body onload="init()">
 
     <div class="container">
-        <!-- <h1>MyProducts</h1> -->
+        <h1>MyProducts</h1>
         <form action="" method="post" id="my-form">
             <div class="form-group">
                 <label for="titleInput">Título del producto</label>
@@ -52,10 +50,24 @@
             </thead>
             <tbody>
 
+                {{#if productos}}
+
+                {{#each productos}}
+                <tr>
+                    <th scope="row">{{this.id}}</th>
+                    <td>{{this.title}}</td>
+                    <td>{{this.price}}</td>
+                    <td><img width="30" height="30" src="{{this.thumbnail}}" /> </td>
+                </tr>
+                {{/each}}
+
+                {{/if}}
+
+
             </tbody>
         </table>
 
-        <!-- <h1>MyChat</h1> -->
+        <h1>MyChat</h1>
 
         <form action="" method="post" id="my-chat">
             <div class="form-group">
@@ -88,20 +100,6 @@
 
 
     <script>
-
-        const user = new normalizr.schema.Entity('users');
-        const comment = new normalizr.schema.Entity('comments', {
-            comenter: user
-        });
-        const article = new normalizr.schema.Entity('articles', {
-            author:  user,
-            comments: [comment]
-        });
-
-        const posts = new normalizr.schema.Entity('posts', {
-            posts: [article]
-        }); 
-        
         const myForm = document.getElementById("my-form");
         const myChat = document.getElementById("my-chat");
         const myMessage = document.getElementById("my-message");
@@ -120,14 +118,6 @@
                 //id: (productos.length + 1),
                 //id: 1,
                 delete: false,
-                timestamp: new Date() ,
-                nombre: document.getElementById('titleInput').value,
-                descripcion: document.getElementById('titleInput').value,
-                codigo: 'P01',
-                foto: document.getElementById('thumbnailInput').value,
-                precio: document.getElementById('priceInput').value,
-                stock: 100,
-                borrado: false
             }
             socket.emit("addProduct", product);
         }
@@ -146,16 +136,12 @@
             event.preventDefault();
             const myTime = new Date(); 
             const message = {
-                //user: document.getElementById('userInput').value,
-                //time: myTime,
-                //msg: document.getElementById('messageInput').value,
-                timestamp: new Date(),
-                usuario: document.getElementById('userInput').value,
-                mensaje: document.getElementById('messageInput').value,
-                fecha: myTime
+                user: document.getElementById('userInput').value,
+                time: myTime,
+                msg: document.getElementById('messageInput').value,
             }
             socket.emit("addMessage", message);
-            document.getElementById('messageInput').value = "";
+            document.getElementById('userInput').value = "";
 
         }
 
@@ -172,13 +158,13 @@
 
             socket.on("listenserver", data => {
                 //drawTable(data);
-                //console.log(data);
+                console.log(data);
                 drawTable(data);
             });
 
             socket.on("listenServerMessages", data => {
                 //drawTable(data);
-                //console.log(data);
+                console.log(data);
                 drawTableMessages(data);
             });
         }
@@ -190,8 +176,7 @@
             if (products.length !== 0) {
                 //document.getElementById("zero-products").parentElement.remove();
                 products.forEach(product => {
-                    table.innerHTML = table.innerHTML + `<th scope="row">${product.codigo}</th><td>${product.nombre}</td><td>${product.precio}</td><td><img width="30" height="30" src="${product.foto}"/></td>`;
-                    // table.innerHTML = table.innerHTML + `<th scope="row">${product.id}</th><td>${product.title}</td><td>${product.price}</td><td><img width="30" height="30" src="${product.thumbnail}"/></td>`;
+                    table.innerHTML = table.innerHTML + `<th scope="row">${product.id}</th><td>${product.title}</td><td>${product.price}</td><td><img width="30" height="30" src="${product.thumbnail}"/></td>`;
                 });
             } else {
                 table.innerHTML = `<td id="zero-products" colspan="4">No hay productos</td>` + table.innerHTML;
@@ -200,26 +185,13 @@
 
         function drawTableMessages(messages) {
            tableMessages.innerHTML = "";
-
-           const denormalizedData = normalizr.denormalize(messages.result, posts, messages.entities);
-
-           denormalizedData.posts.forEach(post => {
-            let dateSplit = post._doc.fecha.split("T");
-            let yearFormat = dateSplit[0][8] + dateSplit[0][9] + '-' + dateSplit[0][5] + dateSplit[0][6] + '-' + dateSplit[0][0] + dateSplit[0][1] + dateSplit[0][2] + dateSplit[0][3];
-            let timeFormat = dateSplit[1][0] + dateSplit[1][1] + ":" + dateSplit[1][3] + dateSplit[1][4] + ":" + dateSplit[1][6] + dateSplit[1][7] ;
-            let finalFormat = `${yearFormat} ${timeFormat}`;
-            tableMessages.innerHTML = tableMessages.innerHTML + `<th scope="row" style="color:blue">${post._doc.autor.id}</th><td style="color:brown">${finalFormat}</td><td style="color:green">${post._doc.mensaje}</td>`;
-           })
-
-           /* 
            messages.forEach(msg => {
-                    let dateSplit = msg.fecha.split("T");
+                    let dateSplit = msg.time.split("T");
                     let yearFormat = dateSplit[0][8] + dateSplit[0][9] + '-' + dateSplit[0][5] + dateSplit[0][6] + '-' + dateSplit[0][0] + dateSplit[0][1] + dateSplit[0][2] + dateSplit[0][3];
                     let timeFormat = dateSplit[1][0] + dateSplit[1][1] + ":" + dateSplit[1][3] + dateSplit[1][4] + ":" + dateSplit[1][6] + dateSplit[1][7] ;
                     let finalFormat = `${yearFormat} ${timeFormat}`;
-                    tableMessages.innerHTML = tableMessages.innerHTML + `<th scope="row" style="color:blue">${msg.autor.id}</th><td style="color:brown">${finalFormat}</td><td style="color:green">${msg.mensaje}</td>`;
+                    tableMessages.innerHTML = tableMessages.innerHTML + `<th scope="row" style="color:blue">${msg.user}</th><td style="color:brown">${finalFormat}</td><td style="color:green">${msg.msg}</td>`;
                 });
-            */
         }
 
 

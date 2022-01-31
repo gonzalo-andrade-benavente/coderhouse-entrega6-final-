@@ -22,13 +22,64 @@ router.get('/login', (req = request, res = response, next) => {
         }
     });
     */
-    
-    res.sendFile("login.html", { root: "public" });
-    
     //res.render('login');
     //res.sendFile('login.html');
     //res.sendFile(path.join(__dirname, '/login.html'));
+
+    if (req.session.user === undefined) {
+        res.sendFile("login.html", { root: "public" });
+    } else {
+        res.sendFile("index.html", { root: "public" });
+    }   
+
 });
+
+router.post('/api/login', (req, res) => {
+    const { user } = req.body;
+    
+    //res.cookie('user', user, {maxAge: 60000 /*, signed:true*/ } ).json({
+    //    msg: '/api/login',
+    //    user,
+    //    response:  true
+    //});
+
+    req.session.user = user;
+
+    res.json({
+        user: req.session.user
+    });
+});
+
+router.get('/api/login', (req, res) => {
+    //res.send(req.cookies);
+    res.json({
+        session: req.session
+    });
+});
+
+router.delete('/api/login/:cookie', (req, res) => {
+    const { cookie } = req.params;
+    
+    req.session.destroy();
+
+    res.send({
+        msg: 'ok'
+    });
+});
+
+router.patch('/api/login', (req, res) => {
+
+    req.session.cookie.expires = 60000;
+    req.session.user = req.session.user;
+
+    res.json({
+        session: req.session
+    });
+});
+
+
+
+
 
 router.get('/api/productos-test', async (req, res) => {
 

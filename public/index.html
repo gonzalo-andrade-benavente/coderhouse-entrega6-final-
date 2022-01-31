@@ -17,6 +17,10 @@
 <body onload="init()">
 
     <div class="container">
+        <div id="logeado" style="display: none;">
+            <h1 id="h1-logeado"></h1>
+            <button onclick="desloguear()" class="btn btn-primary">Deslogear</button>
+        </div>
         <!-- <h1>MyProducts</h1> -->
         <form action="" method="post" id="my-form">
             <div class="form-group">
@@ -89,6 +93,7 @@
 
     <script>
 
+        let userSession;
         const user = new normalizr.schema.Entity('users');
         const comment = new normalizr.schema.Entity('comments', {
             comenter: user
@@ -112,6 +117,10 @@
 
         const submitForm = (event) => {
             event.preventDefault();
+
+            fetch('/api/login', {
+                method: 'PATCH'
+            }).then(res => res.json()).then(data => console.log(data));
 
             const product = {
                 title: document.getElementById('titleInput').value,
@@ -159,7 +168,62 @@
 
         }
 
+        const desloguear = () => {
+            fetch('/api/login/user', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data =>{
+                if (data.msg === 'ok') {
+                    document.getElementById("h1-logeado").innerHTML = `Hasta luego ${ userSession }`;  
+                    setTimeout(() => {
+                        window.location.replace('/login'); 
+                    }, 2000);    
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        }
+
         function init() {
+
+            fetch('/api/login', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data =>{
+                /*
+                if (data.user === undefined) {
+                    window.location.href = "/login";
+                } else  {
+                    console.log(data);
+                }
+                console.log(data);
+                */
+                let { user } = data.session;
+                userSession = user;
+                
+                let divLogeado = document.getElementById("logeado");
+                
+                if ( user !== undefined) {
+                    document.getElementById("logeado").style.display = 'inline';
+                    document.getElementById("h1-logeado").innerHTML = `Bienvenido ${ user }`;
+                } else {
+                    window.location.replace('/login');
+                }
+
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
             myForm.addEventListener('submit', submitForm);
             myChat.addEventListener('submit', loginForm);
             myMessage.addEventListener('submit', submitMessage);

@@ -7,7 +7,7 @@ npm install
     <li> Se modifica la persistencia de datos y todo es en mongo, fijarse en el archivo .env</li>
     <li> Se crea el endpoint para faker </li>
     <li> Se normaliza la data según la consigna y se envía al front, es utiliza el CDN indicado para desnormalizar.</li>
-
+    <li> Se agrega el manejo de session mediante MongoDB mediante llamadas asíncronas desde el Front al Backend.</li>
 </ul>
 
 ## sqlite3 and mysql (docker)

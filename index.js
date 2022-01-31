@@ -8,7 +8,6 @@ const session = require('express-session');
 
 const app = express();
 const AdvancedOptions = { useNewUrlParser: true, useUnifiedTopology: true} ;
-const { mongoDb } = require('./config/index');
 const server = http.createServer(app);
 const Socket = require('./utils/sockets');
 const socket = new Socket(server);
@@ -22,19 +21,22 @@ const { config } = require('./config');
 
 const PORT = config.port;
 
-require('./config/mongoDb');
+const { MONGO_ATLAS_URI  } = require('./config/mongoDb');
 
 // Cookies
-app.use(cookieParser());
+app.use(cookieParser(config.secret));
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: `mongodb+srv://${mongoDb.user}:${mongoDb.password}@${mongoDb.host}/${mongoDb.database}?retryWrites=true&w=majority`,
+        mongoUrl: MONGO_ATLAS_URI,
         mongoOptions: AdvancedOptions
     }),
-    secret: 'shhhhh',
-    resave:  false,
-    saveUninitialized: {
-        maxAge: 300000
+    secret: config.secret,
+    resave:  true,
+    saveUninitialized: true,
+    expires: config.maxAge,
+    cookie: {
+        //maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
+        expires: config.maxAge // 1 minute
     }
 }));
 

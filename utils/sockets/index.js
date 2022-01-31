@@ -1,3 +1,4 @@
+const axios = require('axios');
 const faker = require('faker');
 const normalizr = require('normalizr');
 const normalize = normalizr.normalize;
@@ -28,6 +29,7 @@ const sqliteDb = databaseSqlite.instance;
 const { postProducto, getProductos } = require('../../services/productos'); 
 const { postMensaje, getMensajes } = require('../../services/mensajes');
 const { fake } = require('faker');
+const req = require('express/lib/request');
 
 class Socket {
 
@@ -49,6 +51,8 @@ class Socket {
 
     init() {
 
+        let reqSession;
+
         try {
 
             this.io.on('connection', async (socket) => {
@@ -57,15 +61,17 @@ class Socket {
                 const products = await getProductos(); 
                 socket.emit('init', products);
     
-                socket.on('addProduct', async data => {
+                socket.on('addProduct', async (data) => {
+                    
                     //console.log(`addProduct`);
                     //this.products.push(data);
                     await postProducto(data);
                     //await db.from('products').insert(data); 
-                    
                     //const products = await db.from('products');
                     const products = await getProductos();
                     this.io.sockets.emit('listenserver', products);
+
+
                 });
 
                 socket.on('addUser', async user => {

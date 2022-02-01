@@ -30,13 +30,13 @@ router.get('/login', (req = request, res = response, next) => {
         res.sendFile("login.html", { root: "public" });
     } else {
         res.sendFile("index.html", { root: "public" });
-    }   
+    }
 
 });
 
 router.post('/api/login', (req, res) => {
     const { user } = req.body;
-    
+
     //res.cookie('user', user, {maxAge: 60000 /*, signed:true*/ } ).json({
     //    msg: '/api/login',
     //    user,
@@ -59,7 +59,7 @@ router.get('/api/login', (req, res) => {
 
 router.delete('/api/login/:cookie', (req, res) => {
     const { cookie } = req.params;
-    
+
     req.session.destroy();
 
     res.send({
@@ -76,8 +76,6 @@ router.patch('/api/login', (req, res) => {
         session: req.session
     });
 });
-
-
 
 
 
@@ -106,6 +104,16 @@ router.get('/api/productos-test', async (req, res) => {
         msg: 'productos-test faker',
         productos
     });
+});
+
+router.get('/register', (req = request, res = response, next) => {
+    res.sendFile("register.html", { root: "public" });
+});
+
+router.post('/api/register', (req = request, res = response, next) => {
+    res.send({
+        msg: '/api/register'
+    })
 });
 
 

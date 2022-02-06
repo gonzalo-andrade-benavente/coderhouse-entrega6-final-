@@ -16,11 +16,11 @@
 
     <div class="container">
         <h1>Registro de usuario</h1>
-        <form action="" method="post" id="my-chat">
+        <form action="/register" method="post" id="my-chat">
             <div class="form-group">
-                <input type="text" class="form-control" id="userInput" name="userInput"
+                <input type="text" class="form-control" id="userInput" name="username"
                     placeholder="Ingrese su correo como usario para empezar el chat">
-                    <input type="password" class="form-control" id="userPassword" name="userPassword"
+                    <input type="password" class="form-control" id="userPassword" name="password"
                     placeholder="ingrese su password">
             </div>
 
@@ -28,6 +28,9 @@
                 <button type="submit" class="btn btn-primary">Registrar</button>
             </div>
         </form>
+
+        <button type="button" class="btn btn-primary" onclick="login()">Ir al Login</button>
+
 
     </div>
 
@@ -44,7 +47,8 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    user: document.getElementById('userInput').value
+                    username: document.getElementById('userInput').value,
+                    password: document.getElementById('userPassword').value
                 })
             })
             .then(response => response.json())
@@ -58,7 +62,11 @@
 
         const init = () => {
             let myChat = document.getElementById("my-chat");
-            myChat.addEventListener('submit', loginForm);
+            //myChat.addEventListener('submit', loginForm);
+        }
+
+        const login = () => {
+            window.location.replace("login");
         }
 
     </script>

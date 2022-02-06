@@ -1,11 +1,11 @@
 const Joi = require('joi');
 
-let usuario = Joi.string();
-let contrasenia = Joi.string();
+let username = Joi.string();
+let password = Joi.string();
 
 const usuarioSchema = {
-    usuario,
-    contrasenia
+    username,
+    password
 }
 
 module.exports = {

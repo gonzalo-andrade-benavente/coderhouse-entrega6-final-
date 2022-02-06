@@ -1,47 +1,39 @@
+const bcrypt = require('bcryptjs');
 const faker = require('faker');
 const { Router, request, response } = require('express');
 const router = Router();
 
+const { config } = require('../config');
+const { isAuth } = require('../middlewares/usuarios');
 const { postProducto } = require('../services/productos');
+const { postUsuario, getUsuario } = require('../services/usuarios');
+const passport = require('passport');
 
-router.get('/', (req = request, res = response, next) => {
+
+router.get('/', isAuth, (req = request, res = response, next) => {
     res.sendFile("index.html", { root: "public" });
     //res.render('home');
 });
 
-router.get('/login', (req = request, res = response, next) => {
-    /*
-    req.session.user = {
-        uuid: '12234-2345-2323423'
-    }
-    req.session.save(err => {
-        if(err){
-            console.log(err);
-        } else {
-            res.send(req.session);
-        }
-    });
-    */
-    //res.render('login');
-    //res.sendFile('login.html');
-    //res.sendFile(path.join(__dirname, '/login.html'));
-
-    if (req.session.user === undefined) {
-        res.sendFile("login.html", { root: "public" });
-    } else {
-        res.sendFile("index.html", { root: "public" });
-    }
-
+router.get('/login',(req = request, res = response, next) => {
+    res.sendFile("login.html", { root: "public" });
 });
+
+/*
+router.post('/login', (req, res) => {
+    console.log(req.body);
+    res.send('<h1>Logeado exitosamente</h1>');
+});
+*/
+
+router.get('/login-error' ,(req = request, res = response, next) => {
+    res.sendFile("login-error.html", { root: "public" });
+});
+
+router.post('/login', passport.authenticate('login', { failureRedirect: '/login-error', successRedirect: '/'}));
 
 router.post('/api/login', (req, res) => {
     const { user } = req.body;
-
-    //res.cookie('user', user, {maxAge: 60000 /*, signed:true*/ } ).json({
-    //    msg: '/api/login',
-    //    user,
-    //    response:  true
-    //});
 
     req.session.user = user;
 
@@ -69,15 +61,13 @@ router.delete('/api/login/:cookie', (req, res) => {
 
 router.patch('/api/login', (req, res) => {
 
-    req.session.cookie.expires = 60000;
+    req.session.cookie.expires = config.maxAge;
     req.session.user = req.session.user;
 
     res.json({
         session: req.session
     });
 });
-
-
 
 router.get('/api/productos-test', async (req, res) => {
 
@@ -110,12 +100,39 @@ router.get('/register', (req = request, res = response, next) => {
     res.sendFile("register.html", { root: "public" });
 });
 
-router.post('/api/register', (req = request, res = response, next) => {
-    res.send({
-        msg: '/api/register'
-    })
+router.get('/register-error', (req = request, res = response, next) => {
+    res.sendFile("register-error.html", { root: "public" });
 });
 
+router.post('/register', async(req, res) => {
+    const { username, password} = req.body;
+
+    const tempUser = await getUsuario(username);
+
+    if (tempUser) return res.redirect('register-error');
+
+    const user = await postUsuario({
+        username,
+        password: bcrypt.hashSync(password, 10)
+    });
+
+    req.session.user = user;
+
+    res.redirect('/login');
+
+});
+
+router.post('/api/register', async (req = request, res = response, next) => {
+    const newUser = {
+        username: req.body.username,
+        password: bcrypt.hashSync(req.body.password, 10)
+    }
+    const user = await postUsuario(newUser);
+    req.session.user = req.body;
+    res.send({
+        user
+    });
+});
 
 
 module.exports = router;

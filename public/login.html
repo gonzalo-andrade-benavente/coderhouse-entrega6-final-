@@ -16,17 +16,22 @@
 
     <div class="container">
         <h1>Login de usuario</h1>
-        <form action="" method="post" id="my-chat">
+        <form action="/login" method="post" id="my-chat">
             <div class="form-group">
                 <label for="userInput">Ingrese su correo</label>
-                <input type="text" class="form-control" id="userInput" name="userInput"
+                <input type="text" class="form-control" id="username" name="username" 
                     placeholder="Ingrese su correo como usario para empezar el chat">
+                <input type="password" class="form-control" id="password" name="password" 
+                    placeholder="Password">
+
             </div>
 
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Enviar</button>
             </div>
         </form>
+
+        <button type="button" class="btn btn-primary" onclick="register()">Ir al Registro</button>
 
     </div>
 
@@ -46,20 +51,24 @@
                     user: document.getElementById('userInput').value
                 })
             })
-            .then(response => response.json())
-            .then(data =>{
-                if (data.user !== undefined) {
-                    window.location.replace('/');
-                }
-            })
-            .catch(err => {
-                console.log(err);
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.user !== undefined) {
+                        window.location.replace('/');
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         }
 
         const init = () => {
             let myChat = document.getElementById("my-chat");
-            myChat.addEventListener('submit', loginForm);
+            //myChat.addEventListener('submit', loginForm);
+        }
+
+        const register = () => {
+            window.location.replace('/register');
         }
 
     </script>

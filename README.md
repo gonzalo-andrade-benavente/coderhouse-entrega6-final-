@@ -1,8 +1,18 @@
 ````
 npm install
 ````
+## Update Inicio de sesión
+<ul>
+    <li>Registros usuario y contraseña en MongoDb colección usuarios, se utiliza la librería bcryptjs.</li>
+    <li>Login donde pide usuario y contraseña y realiza autenticación a través de passport local.</li>
+    <li>Cada una de las vistas (logueo-registro) deberá tener un botón para ser redirigido a la otra.</li>
+    <li>Una vez logueado el usuario, se lo redirigirá al inicio, el cual ahora mostrará también su email y un botón para desloguearse.</li>
+    <li>Se recargará cada 10 minutos y tras cada acceso se recargará ese tiempo.</li>
+    <li>Agregar también vistas de error para login (credenciales no válidas) y registro (usuario ya registrado).</li>
+</ul>
 
-## Update
+
+## Update Log-In por Formulario
 <ul>
     <li> Se modifica la persistencia de datos y todo es en mongo, fijarse en el archivo .env</li>
     <li> Se crea el endpoint para faker </li>

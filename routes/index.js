@@ -1,5 +1,7 @@
 const bcrypt = require('bcryptjs');
 const faker = require('faker');
+const { fork } = require('child_process');
+const childFork = fork('./utils/randoms.js');
 const { Router, request, response } = require('express');
 const router = Router();
 
@@ -131,6 +133,35 @@ router.post('/api/register', async (req = request, res = response, next) => {
     req.session.user = req.body;
     res.send({
         user
+    });
+});
+
+router.get('/info', (req = request, res = response, next) => {
+    //res.render(resTemplate);
+    res.json({
+        args: process.argv,
+        operativeSystem: process.platform,
+        nodeVersion: process.version,
+        rss: process.memoryUsage(),
+        path:__dirname,
+        processId: process.pid,
+        folderProject: process.cwd()
+    });
+});
+
+
+router.get('/api/randoms', (req = request, res = response, next) => {
+    
+    let { cant } = req.query;
+    
+
+    if (!cant) cant = 100000000;
+
+    childFork.send(Number(cant));
+    childFork.on('message', data => {
+        res.json({
+            res: data.res
+        });
     });
 });
 

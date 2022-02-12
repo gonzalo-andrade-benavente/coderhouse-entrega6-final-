@@ -1,6 +1,16 @@
 ````
 npm install
 ````
+## Update Usando el objeto process
+
+<ul>
+    <li> Se utiliza el archivo .env (ya utilizado desde el inicio).</li>
+    <li> Se instala yargs y se modifica el ficher config/index para que utilice args con el puerto. </li>
+    <li> Se añade la rut /info con la informaciaón de la consigna.</li>
+    <li> Se genera la ruta /api/randoms con fork no bloqueante, el único problema es que no se pueden hacer dos peticiones (igual al ejemplo visto en clase)</li>
+
+</ul>
+
 ## Update Inicio de sesión
 <ul>
     <li>Registros usuario y contraseña en MongoDb colección usuarios, se utiliza la librería bcryptjs.</li>

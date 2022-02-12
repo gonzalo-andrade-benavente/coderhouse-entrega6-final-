@@ -1,8 +1,18 @@
 require('dotenv').config();
+const yarg = require('yargs');
+
+const options = {
+    alias: {
+        p: 'puerto'
+    }
+}
+
+const procArgv = yarg(process.argv.slice(2)).alias(options.alias).argv;
 
 const config = {
     dev: process.env.NODE_ENV !== 'production',
-    port: process.env.PORT || 8080,
+    //port: process.env.PORT || 8080,
+    port: procArgv.puerto || 8080, 
     cors: process.env.CORS,
     secret: process.env.SECRET,
     maxAge: parseInt(process.env.MAXAGE)

@@ -1,9 +1,12 @@
 require('dotenv').config();
 const yarg = require('yargs');
+const numCPUs = require('os').cpus().length;
 
 const options = {
     alias: {
-        p: 'puerto'
+        p: 'puerto' ,
+        f: 'fork' ,
+        c: 'cluster' ,
     }
 }
 
@@ -12,10 +15,13 @@ const procArgv = yarg(process.argv.slice(2)).alias(options.alias).argv;
 const config = {
     dev: process.env.NODE_ENV !== 'production',
     //port: process.env.PORT || 8080,
-    port: procArgv.puerto || 8080, 
-    cors: process.env.CORS,
-    secret: process.env.SECRET,
-    maxAge: parseInt(process.env.MAXAGE)
+    port: procArgv.puerto || 8081 , 
+    cors: process.env.CORS ,
+    secret: process.env.SECRET ,
+    maxAge: parseInt(process.env.MAXAGE) ,
+    fork: procArgv.fork ,
+    cluster: procArgv.cluster ,
+    numCpus: numCPUs ,
 }
 
 const db = {

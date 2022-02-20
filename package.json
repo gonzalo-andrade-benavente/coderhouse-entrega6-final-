@@ -5,8 +5,19 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js -p 3000",
-    "start": "node index.js -p 8000"
+    "dev": "nodemon index.js -p 8081" ,
+    "start": "node index.js -p 8000" ,
+    "dev-fork": "nodemon index.js -p 8081 -f" ,
+    "dev-cluster": "nodemon index.js -p 8081 -c" ,
+    "dev-forever1": "forever index.js -p 8081 -f" ,
+    "dev-forever2": "forever index.js -p 8082 -f" ,
+    "dev-forever3": "forever index.js -p 8083 -f" ,
+    "dev-pm2-f": "pm2 start index.js --name 'appFork' -- 8081" ,
+    "dev-pm2-c": "pm2 start index.js --name 'appCluster' -i max --watch -- -p 8081" ,
+    "dev-pm2-c2": "pm2 start index.js --name 'appCluster2' -i max --watch -- -p 8082" ,
+    "dev-pm2-c3": "pm2 start index.js --name 'appCluster3' -i max --watch -- -p 8083" , 
+    "dev-pm2-c4": "pm2 start index.js --name 'appCluster4' -i max --watch -- -p 8084" ,
+    "dev-pm2-c5": "pm2 start index.js --name 'appCluster5' -i max --watch -- -p 8085"
   },
   "keywords": [],
   "author": "",

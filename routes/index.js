@@ -139,13 +139,14 @@ router.post('/api/register', async (req = request, res = response, next) => {
 router.get('/info', (req = request, res = response, next) => {
     //res.render(resTemplate);
     res.json({
-        args: process.argv,
-        operativeSystem: process.platform,
-        nodeVersion: process.version,
-        rss: process.memoryUsage(),
-        path:__dirname,
-        processId: process.pid,
-        folderProject: process.cwd()
+        args: process.argv ,
+        operativeSystem: process.platform ,
+        nodeVersion: process.version ,
+        rss: process.memoryUsage() ,
+        path:__dirname ,
+        processId: process.pid ,
+        folderProject: process.cwd() ,
+        cpus: config.numCpus ,
     });
 });
 
@@ -160,7 +161,8 @@ router.get('/api/randoms', (req = request, res = response, next) => {
     childFork.send(Number(cant));
     childFork.on('message', data => {
         res.json({
-            res: data.res
+            port: config.port ,
+            res: data.res ,
         });
     });
 });

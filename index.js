@@ -1,4 +1,5 @@
 const { engine } = require('express-handlebars');
+const cluster = require('cluster');
 const cookieParser = require('cookie-parser');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
@@ -42,7 +43,6 @@ app.use(session({
     saveUninitialized: false,
     expires: config.maxAge,
     cookie: {
-        //maxAge: 1000 * 60 * 60 * 24 * 7 // 1 week
         expires: config.maxAge, // 1 minute
         secure: false,
         httpOnly: false
@@ -55,37 +55,6 @@ app.use(cors(config.cors));
 // MDW Setting
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-//app.use(express.static("./public"));
-
-
-/*
-( async () => {
-    try {
-        await db.schema.createTableIfNotExists('products', table => {
-            table.increments('id').primary(),
-            table.string('title'),
-            table.float('price'),
-            table.string('thumbnail'),
-            table.boolean('delete')
-        }); 
-    } catch (err) {
-        console.log(err);
-    }
-})();
-
-( async () => {
-    try {
-        await sqliteDb.schema.createTableIfNotExists('messages', table => {
-            table.increments('id').primary(),
-            table.string('user'),
-            table.string('time'),
-            table.string('msg')
-        }); 
-    } catch (err) {
-        console.log(err);
-    }
-})();
-*/
 
 passport.use('login', new localStrategy( async (username, password, done) => {
     const user = await getUsuario(username);
@@ -115,13 +84,23 @@ app.use(passport.session());
 // Routes
 app.use( '/', require('./routes') );
 
-// Template
-//app.engine( 'handlebars', engine() );
-//app.set( 'view engine', 'handlebars' );
-//app.set( 'views', __dirname + '/views' );
-
 socket.init();
 
-server.listen(PORT, () => {
-    console.log(`Server running in port ${PORT}`);
-});
+if (config.cluster && cluster.isMaster) {
+    if (cluster.isMaster) {
+        console.log(`Master pid ${process.pid} `);
+        for(let i = 0; i < config.numCpus; i++) {
+            cluster.fork();
+        }
+    }
+} else {
+    console.log(`Worker pid ${process.pid} `);
+    server.listen(PORT, () => {
+        if (config.cluster) {
+            console.log(`Server running in port ${PORT} in cluster mode PID ${process.pid}`);
+        } else {
+            console.log(`Server running in port ${PORT} in fork mode PID ${process.pid}`);
+        }    
+    });
+}
+

@@ -1,6 +1,28 @@
 ````
 npm install
 ````
+## Update Servidor con balance de carga
+<ul>
+    <li>Se agregan los script dev-fork y dev-cluster según lo solicitado en la consigna.</li>
+    <li>Agregar en la vista info el número de cpu's.</li>
+    <li>Ejecutar en modo fork y cluster, se ejecuta correctamente y se generan 4 workers ya que mi portatil tiene 4 cpu's.</li>
+    <li>Ejecutar el servidor utilizando forever, se crean los scripts dev-forever1/dev-forever2/dev-forever3 obtiendo los resultados esperados.</li>    
+    <li>Ejecutar el servidor utilizando PM2, se crean los scripts dev-pm2-f/dev-pm2-c</li>
+    <li>La ruta es /api/randoms?cant=5</li>
+    <li>Nginx: <b>npm run dev-pm2-c</b> para la redirección de la API modo cluster. </li>
+    <li>Como es Linux, se sube en la carpeta ngnix el archivo nginx.conf y default.</li>
+    <li>Se crean lso scripts 
+        <ul>
+            <li>npm run dev-pm2-c2: Inicia cluster de servidores escuchando en el puerto 8082</li>
+            <li>npm run dev-pm2-c3: Inicia cluster de servidores escuchando en el puerto 8083</li>
+            <li>npm run dev-pm2-c4: Inicia cluster de servidores escuchando en el puerto 8084</li>
+            <li>npm run dev-pm2-c5: Inicia cluster de servidores escuchando en el puerto 8085</li>
+        </ul>
+    </li>
+</ul>
+
+
+
 ## Update Usando el objeto process
 
 <ul>

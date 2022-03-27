@@ -1,6 +1,7 @@
 const { engine } = require('express-handlebars');
 const cluster = require('cluster');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const express = require('express');
@@ -55,6 +56,8 @@ app.use(cors(config.cors));
 // MDW Setting
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(compression());
 
 passport.use('login', new localStrategy( async (username, password, done) => {
     const user = await getUsuario(username);

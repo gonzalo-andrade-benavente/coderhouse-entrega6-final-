@@ -5,18 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js -p 8081" ,
-    "start": "node index.js -p 8000" ,
-    "dev-fork": "nodemon index.js -p 8081 -f" ,
-    "dev-cluster": "nodemon index.js -p 8081 -c" ,
-    "dev-forever1": "forever index.js -p 8081 -f" ,
-    "dev-forever2": "forever index.js -p 8082 -f" ,
-    "dev-forever3": "forever index.js -p 8083 -f" ,
-    "dev-pm2-f": "pm2 start index.js --name 'appFork' -- 8081" ,
-    "dev-pm2-c": "pm2 start index.js --name 'appCluster' -i max --watch -- -p 8081" ,
-    "dev-pm2-c2": "pm2 start index.js --name 'appCluster2' -i max --watch -- -p 8082" ,
-    "dev-pm2-c3": "pm2 start index.js --name 'appCluster3' -i max --watch -- -p 8083" , 
-    "dev-pm2-c4": "pm2 start index.js --name 'appCluster4' -i max --watch -- -p 8084" ,
+    "dev": "nodemon index.js -p 5000",
+    "start": "node index.js -p 8000",
+    "dev-fork": "nodemon index.js -p 8081 -f",
+    "dev-cluster": "nodemon index.js -p 8081 -c",
+    "dev-forever1": "forever index.js -p 8081 -f",
+    "dev-forever2": "forever index.js -p 8082 -f",
+    "dev-forever3": "forever index.js -p 8083 -f",
+    "dev-pm2-f": "pm2 start index.js --name 'appFork' -- 8081",
+    "dev-pm2-c": "pm2 start index.js --name 'appCluster' -i max --watch -- -p 8081",
+    "dev-pm2-c2": "pm2 start index.js --name 'appCluster2' -i max --watch -- -p 8082",
+    "dev-pm2-c3": "pm2 start index.js --name 'appCluster3' -i max --watch -- -p 8083",
+    "dev-pm2-c4": "pm2 start index.js --name 'appCluster4' -i max --watch -- -p 8084",
     "dev-pm2-c5": "pm2 start index.js --name 'appCluster5' -i max --watch -- -p 8085"
   },
   "keywords": [],
@@ -26,8 +26,10 @@
     "nodemon": "^2.0.15"
   },
   "dependencies": {
+    "autocannon": "^7.7.2",
     "axios": "^0.25.0",
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
     "connect-mongo": "^4.6.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -45,6 +47,7 @@
     "passport-local": "^1.0.0",
     "socket.io": "^4.4.0",
     "sqlite3": "^5.0.2",
+    "winston": "^3.6.0",
     "yargs": "^17.3.1"
   }
 }

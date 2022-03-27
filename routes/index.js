@@ -11,6 +11,15 @@ const { postProducto } = require('../services/productos');
 const { postUsuario, getUsuario } = require('../services/usuarios');
 const passport = require('passport');
 
+const winston = require('winston');
+const logger = winston.createLogger({
+    transports: [
+        new winston.transports.File({ filename: './utils/logs/error.log', level: 'error' }),
+        new winston.transports.File({ filename: './utils/logs/warn.log', level: 'warn' }),
+        new winston.transports.Console()
+    ]
+});
+
 
 router.get('/', isAuth, (req = request, res = response, next) => {
     res.sendFile("index.html", { root: "public" });
@@ -35,6 +44,7 @@ router.get('/login-error' ,(req = request, res = response, next) => {
 router.post('/login', passport.authenticate('login', { failureRedirect: '/login-error', successRedirect: '/'}));
 
 router.post('/api/login', (req, res) => {
+    logger.info('POST -> /api/login');
     const { user } = req.body;
 
     req.session.user = user;
@@ -45,6 +55,7 @@ router.post('/api/login', (req, res) => {
 });
 
 router.get('/api/login', (req, res) => {
+    logger.info('GET -> /api/login');
     //res.send(req.cookies);
     res.json({
         session: req.session
@@ -52,6 +63,7 @@ router.get('/api/login', (req, res) => {
 });
 
 router.delete('/api/login/:cookie', (req, res) => {
+    logger.info('DELETE -> /api/login/:cookie');
     const { cookie } = req.params;
 
     req.session.destroy();
@@ -62,7 +74,7 @@ router.delete('/api/login/:cookie', (req, res) => {
 });
 
 router.patch('/api/login', (req, res) => {
-
+    logger.info('PATCH -> /api/login');
     req.session.cookie.expires = config.maxAge;
     req.session.user = req.session.user;
 
@@ -72,6 +84,7 @@ router.patch('/api/login', (req, res) => {
 });
 
 router.get('/api/productos-test', async (req, res) => {
+    logger.info('GET -> /api/productos-test');
 
     let prd;
     let productos = [];
@@ -125,6 +138,7 @@ router.post('/register', async(req, res) => {
 });
 
 router.post('/api/register', async (req = request, res = response, next) => {
+    logger.info('POST -> /api/register');
     const newUser = {
         username: req.body.username,
         password: bcrypt.hashSync(req.body.password, 10)
@@ -137,7 +151,7 @@ router.post('/api/register', async (req = request, res = response, next) => {
 });
 
 router.get('/info', (req = request, res = response, next) => {
-    //res.render(resTemplate);
+    logger.info('GET  -> /info');
     res.json({
         args: process.argv ,
         operativeSystem: process.platform ,
@@ -152,10 +166,10 @@ router.get('/info', (req = request, res = response, next) => {
 
 
 router.get('/api/randoms', (req = request, res = response, next) => {
+    logger.info('GET -> /api/randoms');
     
     let { cant } = req.query;
     
-
     if (!cant) cant = 100000000;
 
     childFork.send(Number(cant));
@@ -164,6 +178,21 @@ router.get('/api/randoms', (req = request, res = response, next) => {
             port: config.port ,
             res: data.res ,
         });
+    });
+});
+
+router.get('/api/error', (req, res) => {
+    logger.error('/api/error');
+    res.status(404).json({
+        message: 'Error force'
+    });
+});
+
+router.get('/*', (req, res) => {
+    const message = 'Wrong Route';
+    logger.warn(message);
+    res.status(403).json({
+        message
     });
 });
 

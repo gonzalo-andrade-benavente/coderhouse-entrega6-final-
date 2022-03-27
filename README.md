@@ -1,6 +1,27 @@
 ````
 npm install
 ````
+
+## Loggers, gzip y análisis de performance
+<ul>
+    <li>Incorporar al proyecto de servidor de trabajo la compresión gzip.</li>
+    <li>Luego implementar loggueo (con alguna librería vista en clase <b>Winston</b>) que registre lo siguiente:
+        <ul>
+         <li>Loggear todos los niveles a consola (info, warning y error)</li>
+         <li>Registrar sólo los logs de warning a un archivo llamada warn.log</li>
+         <li>Enviar sólo los logs de error a un archivo llamada error.log</li>
+        </ul>
+    </li>
+    <li> node --prof index.js -p 5000  </li>
+    <li> node --prof-process isolate-0x1046a5000-45282-v8.log > result_prof.txt </li>
+    <li> artillery quick --count 20 -n 50 "http://localhost:5000/info" > result_artillery.txt </li>
+    <li> 0x index.js -p 5000 </li>
+    <li> curl -X GET "http://localhost:5000/info" </li>
+    <li> Informe pdf ./Practica Logger.pdf</li>
+
+
+</ul>
+
 ## Update Servidor con balance de carga
 <ul>
     <li>Se agregan los script dev-fork y dev-cluster según lo solicitado en la consigna.</li>

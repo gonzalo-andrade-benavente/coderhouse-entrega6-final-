@@ -1,6 +1,11 @@
 ````
 npm install
 ````
+##  Dividir en capas nuestro proyecto
+Desde un inicio mis proyectos se han divido capas: routes, controllers y service.
+
+## Desafío: Desplegar nuestro proyecto en la nube
+Se despliega en heroku https://coderhouse-22460.herokuapp.com/ 
 
 ## Loggers, gzip y análisis de performance
 <ul>
